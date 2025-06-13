@@ -2,7 +2,7 @@
 const getRandomIndex = (maxRange) => {
     const randomIndex = Math.floor(Math.random() * maxRange);
     return randomIndex;
-}
+};
 
 /* Helper function that implements Breadth-First Search (BFS)
    to verify if there is a valid path between the player's start 
@@ -66,7 +66,7 @@ const isPathToHat = (field, symbolsObject) => {
 export const generateFieldTemplate = (height, width, symbolsObject) => {
     const emptyField = Array.from({ length: height }, () => new Array(width).fill(symbolsObject.fieldCharacter));
     return emptyField;
-}
+};
 
 /* Helper function to place symbols in the field template, 
    ensuring a valid path exists between the player and the hat
@@ -98,5 +98,55 @@ export const placeSymbols = (field, symbolsObject) => {
         field[x][y] = symbolsObject.hole;
     }
 
-    return isPathToHat(field, symbolsObject) ? field : placeSymbols(field, symbolsObject);
+    let pathExistis = isPathToHat(field, symbolsObject);
+
+    if (pathExistis) {
+        return field;
+    } else {
+        field = generateFieldTemplate(field.length, field[0].length, symbolsObject);
+        placeSymbols(field, symbolsObject);
+    }
+};
+
+/* Helper function to check if the movement input is valid */
+export const checkMovement = (movement, movementsObject) => {
+    const movementsArray = Object.values(movementsObject)
+    return movementsArray.some(movements => movements === movement) ? true : false
+};
+
+/* Helper function to find the player's (`*`) position in the field */
+const findPathCharacter = (field, symbolsObject) => {
+    const charIndex = field.flatMap((row, x) => 
+        row.map((cell, y) => cell === symbolsObject.pathCharacter ? [x, y] : null)
+    ).filter(index => index !== null);
+    
+    return charIndex.flat();
+};
+
+/* Helper function to calculate the new position based on movement */
+const getMovementIndex = (movement, movementsObject, charIndex) => {
+    let movementShift;
+    if (movement === movementsObject.right) {
+        movementShift = [0, 1]
+    } else if (movement === movementsObject.left) {
+        movementShift = [0, -1]        
+    } else if (movement === movementsObject.upwards) {
+        movementShift = [-1, 0]
+    } else if (movement === movementsObject.downwards) {
+        movementShift = [1, 0]
+    }
+
+    const movementX = charIndex[0] + movementShift[0];
+    const movementY = charIndex[1] + movementShift[1];
+    const movementIndex = [movementX, movementY];
+
+    return movementIndex;
+}
+
+/* Helper function to update the field when the player moves */
+export const makeMovement = (movement, field, symbolsObject, movementsObject) => {
+    const charIndex = findPathCharacter(field, symbolsObject);
+    const movementIndex = getMovementIndex(movement, movementsObject, charIndex);
+    field[movementIndex[0]][movementIndex[1]] = symbolsObject.pathCharacter;
+    field[charIndex[0]][charIndex[1]] = symbolsObject.fieldCharacter;
 }
