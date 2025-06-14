@@ -21,8 +21,8 @@ const gameIteraction = () => {
 
 /* Creates and returns a new game object using the provided class blueprint */
 const generateGameObject = (gameClass) => {
-    const gameFiled = gameClass.generateField(50, 100);
-    const gameObject = new gameClass(gameFiled);
+    const gamefield = gameClass.generateField(50, 100);
+    const gameObject = new gameClass(gamefield);
     return gameObject;
 }
 
