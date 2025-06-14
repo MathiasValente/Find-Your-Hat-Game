@@ -142,11 +142,34 @@ const getMovementIndex = (movement, movementsObject, charIndex) => {
 
     return movementIndex;
 }
+const validateAndMove = (field, charIndex, movementIndex, symbolsObject) => {
+    const [newX, newY] = movementIndex;
+    const [oldX, oldY] = charIndex;
+
+    if (newX < 0 || newX >= field.length || newY < 0 || newY >= field[0].length) {
+        console.error("Game over! Movement out of bounds!");
+        process.exit();
+    }
+
+    if (field[newX][newY] === symbolsObject.hole) {
+        console.log("Game Over! You fell into a hole.");
+        process.exit();
+    }
+
+    if (field[newX][newY] === symbolsObject.hat) {
+        console.log("Congratulations! You found the hat!");
+        process.exit();
+    }
+
+    if (field[newX][newY] === symbolsObject.fieldCharacter) {
+        field[newX][newY] = symbolsObject.pathCharacter;
+        field[oldX][oldY] = symbolsObject.fieldCharacter;
+    }
+};
 
 /* Helper function to update the field when the player moves */
 export const makeMovement = (movement, field, symbolsObject, movementsObject) => {
     const charIndex = findPathCharacter(field, symbolsObject);
     const movementIndex = getMovementIndex(movement, movementsObject, charIndex);
-    field[movementIndex[0]][movementIndex[1]] = symbolsObject.pathCharacter;
-    field[charIndex[0]][charIndex[1]] = symbolsObject.fieldCharacter;
+    validateAndMove(field, charIndex, movementIndex, symbolsObject);
 }
