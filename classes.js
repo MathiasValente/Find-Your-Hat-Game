@@ -1,5 +1,4 @@
-import { generateFieldTemplate, placeSymbols, checkMovement, makeMovement } from './helper-functions.js'
-import { movementPrompt } from './IO-operations.js'
+import { generateFieldTemplate, placeSymbols } from './helper-functions.js'
 
 class Field {
 
@@ -29,16 +28,6 @@ class Field {
 
     print() {
         console.log(this.field.map(gridRow => gridRow.join('')).join('\n'));
-    }
-
-    movement() {
-        let move = movementPrompt()
-        if (checkMovement(move, Field.movements)) {
-            makeMovement(move, this.field, Field.fieldSymbols, Field.movements);
-        } else {
-            console.log('please enter a valid direction (r, l, u, d)');
-            this.movement();
-        };
     }
 }
 
