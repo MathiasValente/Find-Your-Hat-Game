@@ -15,6 +15,13 @@ class Field {
         pathCharacter: '*'
     }
 
+    static movements = {
+        right: 'r',
+        left: 'l',
+        upwards: 'u',
+        downwards: 'd'
+    }
+
     constructor(fieldArray) {
         this.field = fieldArray;
     }
